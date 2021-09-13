@@ -47,12 +47,10 @@ function Home() {
 
   const classes = useStyles();
 
+
+  //Refresh Token
   const refreshToken = () => {
     setApiError(null);
-    console.log("refresh");
-    alert("refresh");
-    // setLoading(true);
-
     axios
       .post("https://frontend-test-api.aircall.io/auth/refresh-token", {
         headers: { Authorization: `Bearer ${auth.token}` },
@@ -71,6 +69,7 @@ function Home() {
       });
   };
 
+  //get expiry of token 
   const storedData = JSON.parse(localStorage.getItem("userData"));
 
   useEffect(() => {
@@ -79,14 +78,13 @@ function Home() {
       storedData.token &&
       new Date(storedData.expiration) > new Date()
     ) {
-      console.log("Home expiry stored:" + new Date(storedData.expiration));
-      console.log("current time: " + new Date());
-
       const remainingTime =new Date(storedData.expiration) - new Date().getTime();
       setTimeout(refreshToken, remainingTime);
     }
   }, []);
 
+
+  // Get Calls List of first Page
   useEffect(() => {
     setLoading(true);
     const fetchCalls = () => {
@@ -113,6 +111,8 @@ function Home() {
 
     fetchCalls();
   }, []);
+
+    // Get Calls List of next Pages (after 1st Page)
 
   const handlePageClick = (event, value) => {
     var index = (value - 1) * callsPerPage;
